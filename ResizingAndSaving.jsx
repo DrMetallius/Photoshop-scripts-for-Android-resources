@@ -64,6 +64,7 @@ function saveForAllDensities(outputFolder, version, postfix, ninePatchLines) {
 	saveInFolder(outputFolder, "drawable-hdpi" + versionStr, 150, postfix, ninePatchLines);
 	saveInFolder(outputFolder, "drawable-xhdpi" + versionStr, 200, postfix, ninePatchLines);
 	saveInFolder(outputFolder, "drawable-xxhdpi" + versionStr, 300, postfix, ninePatchLines);
+	saveInFolder(outputFolder, "drawable-xxxhdpi" + versionStr, 400, postfix, ninePatchLines);
 };
 
 function getDocName(removeNinePatchPostfix) {
