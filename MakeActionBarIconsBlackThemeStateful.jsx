@@ -1,4 +1,4 @@
 ﻿//@include MenuIcons.jsx
 
 #target photoshop
-makeIcons(true);
+makeIcons(false, true);

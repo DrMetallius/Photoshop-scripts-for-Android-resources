@@ -185,6 +185,25 @@ function drawLines(doc, factor, lines) {
 	}
 }
 
+function makeSelector(selectorData, outputFolder, subFolderPath) {
+	var docName = getDocName();
+	var xml = "<?xml version=\"1.0\" encoding=\"utf-8\"?>\
+<selector xmlns:android=\"http://schemas.android.com/apk/res/android\">\n";
+	for (var pos = 0; pos < selectorData.length; pos++) {
+		xml += "\t<item";
+		var lineDesc = selectorData[pos];
+		if (lineDesc.attrs) {
+			for (var attrName in lineDesc.attrs) {
+				xml += " android:" + attrName + "=\"" + lineDesc.attrs[attrName] + "\"";
+			}	
+		}
+		xml += " android:drawable=\"@drawable/" + docName + "_" + lineDesc.postfix + "\"/>\n";
+	}
+	xml += "</selector>";
+    
+    saveXmlFile (outputFolder, subFolderPath, xml);
+}
+
 function saveXmlFile(outputFolder, subFolderPath, fileContents) {
 	var file = createFile(outputFolder, subFolderPath, "", ".xml", true);
 	if (!file.open("w")) return false;
