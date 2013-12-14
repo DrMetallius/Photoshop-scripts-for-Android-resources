@@ -23,15 +23,16 @@ function makeIcons(whiteTheme, makeStateful) {
 				postfix: "normal"
 			}
 		]
-		makeSelector(selectorData, outputFolder, "drawable");
+		makeSelectorXml(selectorData, outputFolder, "drawable");
 	}
-	
-	applyActionBarItemStyle(whiteTheme, false);
-	saveForAllDensities(outputFolder, null, makeStateful ? "_normal" : "");
+
+	var styleFunctions = [function(style) {applyActionBarItemStyle(whiteTheme, false)}];
+	var postfixes = ["normal"];
 	if (makeStateful) {
-		applyActionBarItemStyle(whiteTheme, true);
-		saveForAllDensities(outputFolder, null, "_disabled");
+		styleFunctions.unshift(function(style) {applyActionBarItemStyle(whiteTheme, true)});
+		postfixes.unshift("disabled");
 	}
+	saveStyledDrawables(outputFolder, styleFunctions, postfixes);
 		
 	restoreState(initialState);
 }

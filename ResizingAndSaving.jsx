@@ -185,7 +185,7 @@ function drawLines(doc, factor, lines) {
 	}
 }
 
-function makeSelector(selectorData, outputFolder, subFolderPath) {
+function makeSelectorXml(selectorData, outputFolder, subFolderPath) {
 	var docName = getDocName();
 	var xml = "<?xml version=\"1.0\" encoding=\"utf-8\"?>\
 <selector xmlns:android=\"http://schemas.android.com/apk/res/android\">\n";
@@ -200,8 +200,8 @@ function makeSelector(selectorData, outputFolder, subFolderPath) {
 		xml += " android:drawable=\"@drawable/" + docName + "_" + lineDesc.postfix + "\"/>\n";
 	}
 	xml += "</selector>";
-    
-    saveXmlFile (outputFolder, subFolderPath, xml);
+	
+	saveXmlFile(outputFolder, subFolderPath, xml);
 }
 
 function saveXmlFile(outputFolder, subFolderPath, fileContents) {
@@ -211,6 +211,25 @@ function saveXmlFile(outputFolder, subFolderPath, fileContents) {
 	if (!file.close()) return false;
 	
 	return true;
+}
+
+function saveStyledDrawables(outputFolder, styleFunctions, postfixes) {
+	var doc = app.activeDocument;
+	var initialState = getState();
+	var ninePatchLines = computeNinePatchLines();
+
+	for (var pos = 0; pos < styleFunctions.length; pos++) {
+		doc.activeLayer = doc.layers[0];
+		clearAllEffects();
+
+		var style = newStyle();
+		styleFunctions[pos](style);
+		applyStyle(style);
+
+		saveForAllDensities(outputFolder, null, "_" + postfixes[pos], ninePatchLines);
+
+		restoreState(initialState);
+	}
 }
 
 function getState() {
