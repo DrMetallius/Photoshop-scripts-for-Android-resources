@@ -14,9 +14,7 @@ function makeIcons(whiteTheme, makeStateful) {
 	if (makeStateful) {
 		var selectorData = [
 			{
-				attrs: {
-					state_enabled: false
-				},
+				state_enabled: false,
 				postfix: "disabled"
 			},
 			{

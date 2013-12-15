@@ -195,11 +195,11 @@ function makeSelectorXml(selectorData, outputFolder, subFolderPath) {
 	for (var pos = 0; pos < selectorData.length; pos++) {
 		xml += "\t<item";
 		var lineDesc = selectorData[pos];
-		if (lineDesc.attrs) {
-			for (var attrName in lineDesc.attrs) {
-				xml += " android:" + attrName + "=\"" + lineDesc.attrs[attrName] + "\"";
-			}	
-		}
+		for (var attrName in lineDesc) {
+			if (attrName.lastIndexOf("state_", 0) === 0) {
+				xml += " android:" + attrName + "=\"" + lineDesc[attrName] + "\"";
+			}
+		}	
 		xml += " android:drawable=\"@drawable/" + docName + "_" + lineDesc.postfix + "\"/>\n";
 	}
 	xml += "</selector>";
