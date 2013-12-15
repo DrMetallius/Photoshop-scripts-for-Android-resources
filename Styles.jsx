@@ -242,43 +242,13 @@ function addInnerShadow(style, r, g, b, opacity, angle, distance, size) {
 }
 
 function setOpacity(opacity) {
-	var idsetd = charIDToTypeID( "setd" );
-		var desc2 = new ActionDescriptor();
-		var idnull = charIDToTypeID( "null" );
-			var ref1 = new ActionReference();
-			var idLyr = charIDToTypeID( "Lyr " );
-			var idOrdn = charIDToTypeID( "Ordn" );
-			var idTrgt = charIDToTypeID( "Trgt" );
-			ref1.putEnumerated( idLyr, idOrdn, idTrgt );
-		desc2.putReference( idnull, ref1 );
-		var idT = charIDToTypeID( "T   " );
-			var desc3 = new ActionDescriptor();
-			var idOpct = charIDToTypeID( "Opct" );
-			var idPrc = charIDToTypeID( "#Prc" );
-			desc3.putUnitDouble( idOpct, idPrc, opacity );
-		var idLyr = charIDToTypeID( "Lyr " );
-		desc2.putObject( idT, idLyr, desc3 );
-	executeAction( idsetd, desc2, DialogModes.NO );
+	app.activeDocument.activeLayer.opacity = opacity;
 }
 
 function setFillOpacity(opacity) {
-	var idsetd = charIDToTypeID( "setd" );
-		var desc80 = new ActionDescriptor();
-		var idnull = charIDToTypeID( "null" );
-			var ref26 = new ActionReference();
-			var idLyr = charIDToTypeID( "Lyr " );
-			var idOrdn = charIDToTypeID( "Ordn" );
-			var idTrgt = charIDToTypeID( "Trgt" );
-			ref26.putEnumerated( idLyr, idOrdn, idTrgt );
-		desc80.putReference( idnull, ref26 );
-		var idT = charIDToTypeID( "T   " );
-			var desc81 = new ActionDescriptor();
-			var idfillOpacity = stringIDToTypeID( "fillOpacity" );
-			var idPrc = charIDToTypeID( "#Prc" );
-			desc81.putUnitDouble( idfillOpacity, idPrc, opacity );
-		var idLyr = charIDToTypeID( "Lyr " );
-		desc80.putObject( idT, idLyr, desc81 );
-	executeAction( idsetd, desc80, DialogModes.NO );
+	var doc = app.activeDocument;
+	var artLayer = doc.artLayers.getByName(doc.activeLayer.name);
+	artLayer.fillOpacity = opacity;
 }
 
 function addColorOverlay(style, r, g, b, opacity) {
