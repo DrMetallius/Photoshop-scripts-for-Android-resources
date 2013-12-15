@@ -158,8 +158,10 @@ function areaIsEmpty(doc, x, y) {
 }
 
 function drawLines(doc, factor, lines) {
-	doc.activeLayer = doc.layers[doc.layers.length - 1];
+	var layerIndex = doc.layers.length - 1;
+	doc.activeLayer = doc.layers[layerIndex];
 	
+	doc.artLayers[layerIndex].rasterize(RasterizeType.ENTIRELAYER);
 	doc.selection.selectAll();
 	doc.selection.clear();
 	
