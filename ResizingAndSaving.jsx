@@ -11,19 +11,19 @@
 
 function resize(size, relative) {
 	var idImgS = charIDToTypeID( "ImgS" );
-		var desc89 = new ActionDescriptor();
+		var desc = new ActionDescriptor();
 		var idWdth = charIDToTypeID( "Wdth" );
 		var idPxl = charIDToTypeID( relative ? "#Prc" : "#Pxl" );
-		desc89.putUnitDouble( idWdth, idPxl, size );
+		desc.putUnitDouble( idWdth, idPxl, size );
 		var idscaleStyles = stringIDToTypeID( "scaleStyles" );
-		desc89.putBoolean( idscaleStyles, true );
+		desc.putBoolean( idscaleStyles, true );
 		var idCnsP = charIDToTypeID( "CnsP" );
-		desc89.putBoolean( idCnsP, true );
+		desc.putBoolean( idCnsP, true );
 		var idIntr = charIDToTypeID( "Intr" );
 		var idIntp = charIDToTypeID( "Intp" );
 		var idbicubicSharper = stringIDToTypeID( "bicubicAutomatic" );
-		desc89.putEnumerated( idIntr, idIntp, idbicubicSharper );
-	executeAction( idImgS, desc89, DialogModes.NO );
+		desc.putEnumerated( idIntr, idIntp, idbicubicSharper );
+	executeAction( idImgS, desc, DialogModes.NO );
 }
 
 function resizeLayer(size) { //Size is given in percents
@@ -77,11 +77,11 @@ function isNinePatch(docName) {
 	return docName.indexOf(".9", docName.length - ".9".length) !== -1;
 }
 
-function createFile(outputFolder, subFolder, postfix, ext, removeNinePatchPostfix) {
+function createFile(outputFolder, subFolder, postfix, ext, removeNinePatchPostfix, docName) {
 	var subFolder = new Folder(outputFolder.toString() + "/" + subFolder);
 	if (!subFolder.exists) subFolder.create();
 	
-	var docName = getDocName(removeNinePatchPostfix);
+	if (!docName) docName = getDocName(removeNinePatchPostfix);
 	if (!removeNinePatchPostfix && isNinePatch(docName)) {
 		docName = docName.slice(0, -".9".length);
 		ext = ".9" + ext;
@@ -188,8 +188,10 @@ function drawLines(doc, factor, lines) {
 	}
 }
 
-function makeSelectorXml(selectorData, outputFolder, subFolderPath) {
-	var docName = getDocName();
+function makeSelectorXml(selectorData, outputFolder, subFolderPath, docName, docPostfix, xmlPostfix) {
+	if (!docName) docName = getDocName(true);
+	if (!docPostfix) docPostfix = "";
+    if (!xmlPostfix) xmlPostfix = "";
 	var xml = "<?xml version=\"1.0\" encoding=\"utf-8\"?>\
 <selector xmlns:android=\"http://schemas.android.com/apk/res/android\">\n";
 	for (var pos = 0; pos < selectorData.length; pos++) {
@@ -200,15 +202,16 @@ function makeSelectorXml(selectorData, outputFolder, subFolderPath) {
 				xml += " android:" + attrName + "=\"" + lineDesc[attrName] + "\"";
 			}
 		}	
-		xml += " android:drawable=\"@drawable/" + docName + "_" + lineDesc.postfix + "\"/>\n";
+		xml += " android:drawable=\"@drawable/" + docName + "_" + lineDesc.postfix + docPostfix + "\"/>\n";
 	}
 	xml += "</selector>";
 	
-	saveXmlFile(outputFolder, subFolderPath, xml);
+	saveXmlFile(outputFolder, subFolderPath, xml, xmlPostfix);
 }
 
-function saveXmlFile(outputFolder, subFolderPath, fileContents) {
-	var file = createFile(outputFolder, subFolderPath, "", ".xml", true);
+function saveXmlFile(outputFolder, subFolderPath, fileContents, postfix) {
+	if (!postfix) postfix = "";
+	var file = createFile(outputFolder, subFolderPath, postfix, ".xml", true);
 	if (!file.open("w")) return false;
 	file.write(fileContents);
 	if (!file.close()) return false;
@@ -216,10 +219,11 @@ function saveXmlFile(outputFolder, subFolderPath, fileContents) {
 	return true;
 }
 
-function saveStyledDrawables(outputFolder, styleFunctions, postfixes) {
+function saveStyledDrawables(outputFolder, styleFunctions, postfixes, docPostfix) {
 	var doc = app.activeDocument;
 	var initialState = getState();
 	var ninePatchLines = computeNinePatchLines();
+	if (!docPostfix) docPostfix = "";
 
 	for (var pos = 0; pos < styleFunctions.length; pos++) {
 		doc.activeLayer = doc.layers[0];
@@ -229,7 +233,7 @@ function saveStyledDrawables(outputFolder, styleFunctions, postfixes) {
 		styleFunctions[pos](style);
 		applyStyle(style);
 
-		saveForAllDensities(outputFolder, null, "_" + postfixes[pos], ninePatchLines);
+		saveForAllDensities(outputFolder, null, "_" + postfixes[pos] + docPostfix, ninePatchLines);
 
 		restoreState(initialState);
 	}
