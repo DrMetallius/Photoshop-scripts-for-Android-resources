@@ -250,7 +250,7 @@ function saveStyledDrawables(outputFolder, styleFunctions, postfixes, docPostfix
 		styleFunctions[pos](style);
 		applyStyle(style);
 
-		saveForAllDensities(outputFolder, null, "_" + postfixes[pos] + docPostfix, ninePatchLines);
+		saveForAllDensities(outputFolder, null, (postfixes[pos] ? "_" + postfixes[pos] : "") + docPostfix, ninePatchLines);
 
 		restoreState(initialState);
 	}

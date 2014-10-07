@@ -16,7 +16,7 @@ The script **MakeForAllDensities** creates versions of the resource for the foll
 
 1. Create a resource for the *mdpi* density. It should be a vector image, otherwise it won't scale well.
 2. **If the file is a nine-patch**: make sure that you have drawn the nine-patch lines on a separate layer at the very bottom of the image.
-3. Save the file on the drive with the appropriate name (say, the file for the resource *ic_launcher* should be named *ic_launcher.psd*). Don't forget the *.9* postfix if the file is a nine-patch (for example, *ic_launcher.9.psd*). The best place to save the file is a subfolder in you Android project folder, because this way the scripts will detect the *res* folder automatically.
+3. Save the file on the drive with the appropriate name (say, the file for the resource *ic_launcher* should be named *ic_launcher.psd*). Don't forget the *.9* postfix if the file is a nine-patch (for example, *ic_launcher.9.psd*). The best place to save the file is a subfolder in your Android project folder, because this way the scripts will detect the *res* folder automatically.
 4. Make sure that the document is currently open and active in Photoshop.
 5. Run the script **MakeForAllDensities** by double clicking it.
 

@@ -42,7 +42,7 @@ function makeIcons(whiteTheme, makeStateful) {
 	}
 
 	var styleFunctions = [function(style) {applyActionBarItemStyle(whiteTheme, false)}];
-	var postfixes = ["normal"];
+	var postfixes = [makeStateful ? "normal" : null];
 	if (makeStateful) {
 		styleFunctions.unshift(function(style) {applyActionBarItemStyle(whiteTheme, true)});
 		postfixes.unshift("disabled");
