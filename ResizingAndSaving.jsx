@@ -17,7 +17,7 @@ along with Photoshop Scripts for Android. If not, see <http://www.gnu.org/licens
 
 function detectFolder() {
 	var outputFolder = null;
-	if (app.activeDocument.path != null) {
+	if (app.documents.length > 0 && app.activeDocument.path) {
 		var resourcesFolder = new Folder(app.activeDocument.path.parent + "/res");
 		if (resourcesFolder.exists) outputFolder = resourcesFolder;
 	}
@@ -59,12 +59,12 @@ function computeNinePatchLines() {
 	
 	var doc = app.activeDocument;
 	var areaCheckingFunctions = [
-		function(pos) {return areaIsEmpty(doc, pos, 0);},
-		function(pos) {return areaIsEmpty(doc, 0, pos);},
-		function(pos) {return areaIsEmpty(doc, pos, doc.height - 1);},
-		function(pos) {return areaIsEmpty(doc, doc.width - 1, pos);}
+		function(pos) {return areaIsEmpty(doc, pos, 0.5);},
+		function(pos) {return areaIsEmpty(doc, 0.5, pos);},
+		function(pos) {return areaIsEmpty(doc, pos, doc.height - 0.5);},
+		function(pos) {return areaIsEmpty(doc, doc.width - 0.5, pos);}
 	];
-	maxPositions = [doc.width, doc.height, doc.width, doc.height];
+	maxPositions = [doc.width - 1, doc.height - 1, doc.width - 1, doc.height - 1];
 	ninePatchLines = new Array();
 	for (var pos = 0; pos < areaCheckingFunctions.length; pos++) {
 		ninePatchLines.push(findLines(maxPositions[pos], areaCheckingFunctions[pos]));
@@ -76,7 +76,7 @@ function computeNinePatchLines() {
 function saveForAllDensities(outputFolder, version, postfix, ninePatchLines) {
 	if (!ninePatchLines) ninePatchLines = computeNinePatchLines();
 	
-	var versionStr = version ?  "-v" + version : "";
+	var versionStr = version ?	"-v" + version : "";
 	saveInFolder(outputFolder, "drawable-mdpi" + versionStr, 100, postfix, ninePatchLines);
 	saveInFolder(outputFolder, "drawable-hdpi" + versionStr, 150, postfix, ninePatchLines);
 	saveInFolder(outputFolder, "drawable-xhdpi" + versionStr, 200, postfix, ninePatchLines);
@@ -135,14 +135,14 @@ function findLines(maxPos, areaCheckingFunction) {
 
 	var positions = new Array();
 	var lineFound = false;
-	for (var pos = 0; pos < maxPos; pos++) {
-		var areaEmpty = areaCheckingFunction(pos);
+	for (var pos = 0; pos <= maxPos; pos++) {
+		var areaEmpty = areaCheckingFunction(pos + 0.5);
 		if (!areaEmpty && !lineFound) {
 			lineFound = true;
 			positions.push(pos);
 		} else if (areaEmpty && lineFound) {
 			lineFound = false;
-			positions.push(pos);
+			positions.push(pos - 1);
 		}
 	}
 	return positions;
@@ -162,12 +162,12 @@ function areaIsEmpty(doc, x, y) {
 		colorSampler.move([x, y]);
 	}
 
-   var areaEmpty;
-   try {
-	   areaEmpty = colorSampler.color.rgb.hexValue !== "000000";
-   } catch (e) {
-	   areaEmpty = true;
-   }
+	var areaEmpty;
+	try {
+		areaEmpty = colorSampler.color.rgb.hexValue !== "000000";
+	} catch (e) {
+		areaEmpty = true;
+	}
 
 	restoreState(state);
 	
@@ -198,7 +198,7 @@ function drawLines(doc, factor, lines) {
 		var line = lines[pos];
 		for (var lineStart = 0, lineEnd = 1; lineStart + 1 < line.length; lineStart += 2, lineEnd += 2) {
 			var newStart = Math.ceil((line[lineStart] - 1) * factor + 1);
-			var newEnd = Math.floor((line[lineEnd] - 1) * factor + 1);
+			var newEnd = Math.floor(line[lineEnd] * factor + 1);
 			selectionFunctions[pos](newStart, newEnd);
 			doc.selection.fill(black);
 		}
@@ -208,7 +208,7 @@ function drawLines(doc, factor, lines) {
 function makeSelectorXml(selectorData, outputFolder, subFolderPath, docName, docPostfix, xmlPostfix) {
 	if (!docName) docName = getDocName(true);
 	if (!docPostfix) docPostfix = "";
-    if (!xmlPostfix) xmlPostfix = "";
+	if (!xmlPostfix) xmlPostfix = "";
 	var xml = "<?xml version=\"1.0\" encoding=\"utf-8\"?>\
 <selector xmlns:android=\"http://schemas.android.com/apk/res/android\">\n";
 	for (var pos = 0; pos < selectorData.length; pos++) {
