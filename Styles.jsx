@@ -294,6 +294,59 @@ function addColorOverlay(style, r, g, b, opacity) {
 	style.putObject( idSoFi, idSoFi, desc84 );
 }
 
+function addOuterGlow(style, r, g, b, opacity, noise, spread, size) {
+	var idOrGl = charIDToTypeID( "OrGl" );
+		var desc7 = new ActionDescriptor();
+		var idenab = charIDToTypeID( "enab" );
+		desc7.putBoolean( idenab, true );
+		var idMd = charIDToTypeID( "Md  " );
+		var idBlnM = charIDToTypeID( "BlnM" );
+		var idScrn = charIDToTypeID( "Scrn" );
+		desc7.putEnumerated( idMd, idBlnM, idScrn );
+		var idClr = charIDToTypeID( "Clr " );
+			var desc8 = new ActionDescriptor();
+			var idRd = charIDToTypeID( "Rd  " );
+			desc8.putDouble( idRd, r );
+			var idGrn = charIDToTypeID( "Grn " );
+			desc8.putDouble( idGrn, g );
+			var idBl = charIDToTypeID( "Bl  " );
+			desc8.putDouble( idBl, b );
+		var idRGBC = charIDToTypeID( "RGBC" );
+		desc7.putObject( idClr, idRGBC, desc8 );
+		var idOpct = charIDToTypeID( "Opct" );
+		var idPrc = charIDToTypeID( "#Prc" );
+		desc7.putUnitDouble( idOpct, idPrc, opacity );
+		var idGlwT = charIDToTypeID( "GlwT" );
+		var idBETE = charIDToTypeID( "BETE" );
+		var idSfBL = charIDToTypeID( "SfBL" );
+		desc7.putEnumerated( idGlwT, idBETE, idSfBL );
+		var idCkmt = charIDToTypeID( "Ckmt" );
+		var idPxl = charIDToTypeID( "#Pxl" );
+		desc7.putUnitDouble( idCkmt, idPxl, spread );
+		var idblur = charIDToTypeID( "blur" );
+		var idPxl = charIDToTypeID( "#Pxl" );
+		desc7.putUnitDouble( idblur, idPxl, size );
+		var idNose = charIDToTypeID( "Nose" );
+		var idPrc = charIDToTypeID( "#Prc" );
+		desc7.putUnitDouble( idNose, idPrc, noise );
+		var idShdN = charIDToTypeID( "ShdN" );
+		var idPrc = charIDToTypeID( "#Prc" );
+		desc7.putUnitDouble( idShdN, idPrc, 0.000000 );
+		var idAntA = charIDToTypeID( "AntA" );
+		desc7.putBoolean( idAntA, false );
+		var idTrnS = charIDToTypeID( "TrnS" );
+			var desc9 = new ActionDescriptor();
+			var idNm = charIDToTypeID( "Nm  " );
+			desc9.putString( idNm, """Linear""" );
+		var idShpC = charIDToTypeID( "ShpC" );
+		desc7.putObject( idTrnS, idShpC, desc9 );
+		var idInpr = charIDToTypeID( "Inpr" );
+		var idPrc = charIDToTypeID( "#Prc" );
+		desc7.putUnitDouble( idInpr, idPrc, 50.000000 );
+	var idOrGl = charIDToTypeID( "OrGl" );
+	style.putObject( idOrGl, idOrGl, desc7 );
+}
+
 function setLayerColor(r, g, b) {
 	var idsetd = charIDToTypeID( "setd" );
 		var desc132 = new ActionDescriptor();
