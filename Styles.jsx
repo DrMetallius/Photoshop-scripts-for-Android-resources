@@ -58,14 +58,14 @@ function applyStyle(style) {
 	executeAction( idsetd, desc, DialogModes.NO );
 }
 
-function addStroke(style, r, g, b, size) {
+function addStroke(style, r, g, b, size, position) { //Position can be "OutF", "InsF", or "CtrF"
 	var effect = new ActionDescriptor();
 	var idenab = charIDToTypeID( "enab" );
 	effect.putBoolean( idenab, true );
 	var idStyl = charIDToTypeID( "Styl" );
 	var idFStl = charIDToTypeID( "FStl" );
-	var idOutF = charIDToTypeID( "OutF" );
-	effect.putEnumerated( idStyl, idFStl, idOutF );
+	var idPos = charIDToTypeID( position ? position : "OutF" );
+	effect.putEnumerated( idStyl, idFStl, idPos );
 	var idPntT = charIDToTypeID( "PntT" );
 	var idFrFl = charIDToTypeID( "FrFl" );
 	var idSClr = charIDToTypeID( "SClr" );
