@@ -61,10 +61,10 @@ function computeNinePatchLines() {
 	var areaCheckingFunctions = [
 		function(pos) {return areaIsEmpty(doc, pos, 0.5);},
 		function(pos) {return areaIsEmpty(doc, 0.5, pos);},
-		function(pos) {return areaIsEmpty(doc, pos, doc.height - 0.5);},
-		function(pos) {return areaIsEmpty(doc, doc.width - 0.5, pos);}
+		function(pos) {return areaIsEmpty(doc, pos, doc.height.as('px') - 0.5);},
+		function(pos) {return areaIsEmpty(doc, doc.width.as('px') - 0.5, pos);}
 	];
-	maxPositions = [doc.width - 1, doc.height - 1, doc.width - 1, doc.height - 1];
+	maxPositions = [doc.width.as('px') - 1, doc.height.as('px') - 1, doc.width.as('px') - 1, doc.height.as('px') - 1];
 	ninePatchLines = new Array();
 	for (var pos = 0; pos < areaCheckingFunctions.length; pos++) {
 		ninePatchLines.push(findLines(maxPositions[pos], areaCheckingFunctions[pos]));
@@ -118,9 +118,11 @@ function saveInFolder(outputFolder, subFolder, scaling, postfix, ninePatchLines)
 	
 	if (ninePatchLines) {
 		var doc = app.activeDocument;	
-		doc.resizeCanvas(doc.width - 2, doc.height - 2);
+         var margin = UnitValue(2, "px");
+         margin.convert(doc.width.type);
+		doc.resizeCanvas(doc.width - margin, doc.height - margin);
 		resize(scaling, true);
-		doc.resizeCanvas(doc.width + 2, doc.height + 2);
+		doc.resizeCanvas(doc.width + margin, doc.height + margin);
 		drawLines(doc, scaling / 100, ninePatchLines);
 	} else {
 		resize(scaling, true);
@@ -135,7 +137,7 @@ function findLines(maxPos, areaCheckingFunction) {
 
 	var positions = new Array();
 	var lineFound = false;
-	for (var pos = 0; pos <= maxPos; pos++) {
+	for (var pos = UnitValue(0, "px"); pos <= maxPos; pos++) {
 		var areaEmpty = areaCheckingFunction(pos + 0.5);
 		if (!areaEmpty && !lineFound) {
 			lineFound = true;
@@ -155,11 +157,13 @@ function selectBounds(doc, b) {
 function areaIsEmpty(doc, x, y) {
    var state = getState();
    
+   var xPx = UnitValue(x, "px");
+   var yPx = UnitValue(y, "px");
 	if (doc.colorSamplers.length == 0) {
-		var colorSampler = doc.colorSamplers.add([x,y]);
+		var colorSampler = doc.colorSamplers.add([xPx,yPx]);
 	} else {
 		var colorSampler = doc.colorSamplers[0];
-		colorSampler.move([x, y]);
+		colorSampler.move([xPx, yPx]);
 	}
 
 	var areaEmpty;
@@ -178,7 +182,7 @@ function drawLines(doc, factor, lines) {
 	var layerIndex = doc.layers.length - 1;
 	doc.activeLayer = doc.layers[layerIndex];
 	
-	doc.artLayers[layerIndex].rasterize(RasterizeType.ENTIRELAYER);
+	doc.layers[layerIndex].rasterize(RasterizeType.ENTIRELAYER);
 	doc.selection.selectAll();
 	doc.selection.clear();
 	
@@ -190,8 +194,8 @@ function drawLines(doc, factor, lines) {
 	var selectionFunctions = [
 		function(start, end) {selectBounds(doc, [start, 0, end, 1])},
 		function(start, end) {selectBounds(doc, [0, start, 1, end])},
-		function(start, end) {selectBounds(doc, [start, doc.height - 1, end, doc.height])},
-		function(start, end) {selectBounds(doc, [doc.width - 1, start, doc.width, end])}
+		function(start, end) {selectBounds(doc, [start, doc.height.as('px') - 1, end, doc.height.as('px')])},
+		function(start, end) {selectBounds(doc, [doc.width.as('px') - 1, start, doc.width.as('px'), end])}
 	];
 	
 	for (var pos = 0; pos < lines.length; pos++) {
